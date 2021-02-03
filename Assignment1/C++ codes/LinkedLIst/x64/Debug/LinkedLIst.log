@@ -1,0 +1,3 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(491,5): warning MSB8028: The intermediate directory (x64\Debug\) contains files shared from another project (LinkedList.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  linklist.cpp
+  LinkedLIst.vcxproj -> C:\Users\eric1\OneDrive - Vancouver Community College\Winter 2021\CSTP 1305 Algo Analysis & Data Structure\Week 1 ADT, Stack\C++ ClassDemo\x64\Debug\LinkedListStack.exe
