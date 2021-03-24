@@ -4,15 +4,15 @@ public interface IDictionary<K, V> {
     * Post: add key and value pair into the dictionary; */
     void Add(K key, V value) throws InvalidKeyException;
 
-    /*Pre: check if key exists, otherwise throw exception;
-    * Post: remove the key and value pair if the key exists; */
+    /*Pre: key as argument
+    * Post: remove the key and value pair if the key exists; otherwise it does nothing */
     void Remove(K key);
 
-    /*Pre: check if key exists, otherwise throw exception;
-    * Post: return value if key exists; */
+    /*Pre: key as argument
+    * Post: return value if key exists; otherwise returns null */
     V GetValue(K key);
 
-    /*Pre: arg = key
+    /*Pre: key as argument
     * Post: return a boolean to indicate whether the key exists in the dictionary; */
     boolean Contains(K key);
 

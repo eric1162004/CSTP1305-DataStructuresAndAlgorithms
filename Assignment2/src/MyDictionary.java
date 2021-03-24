@@ -12,59 +12,70 @@ public class MyDictionary implements IDictionary<String, Integer>{
 
     @Override
     public void Add(String key, Integer value) throws InvalidKeyException {
+        // Check if Our dictionary already contains such key
+        // if yes, throws exception
         if(Contains(key))
             throw new InvalidKeyException("Key already exists");
 
-        Node temp = head;
+        // Adding the new key/value node
         if(head == null)
             head = new Node(key, value);
         else{
-            while(temp.next != null){
-                temp = temp.next;
-            }
-            temp.next = new Node(key, value);
+            Node new_node = new Node(key, value);
+            new_node.next = head;
+            head = new_node;
         }
+
+        // increment count
         count++;
     }
 
     @Override
     public void Remove(String key) {
-        Node temp = head;
 
-        if(IsEmpty()) return;
+        // Check if the Dictionary is empty
+        if(head == null) return;
 
+        // Special Case: Check if the head contains the key
         if(head.key == key){
-            if(head.next == null)
-                head = null;
-            else
+            if(head.next != null)
                 head = head.next;
+            else
+                head = null;
             count--;
             return;
         }
 
-        while(temp.next != null){
-            if(temp.next.key == key){
-                if(temp.next.next != null)
-                    temp.next = temp.next.next;
-                else
-                    temp.next = null;
+        // General Case:
+        Node temp = head.next;
+        Node temp_prev = head;
+
+        while(temp != null){
+            if(temp.key == key){ // If key matches
+                if(temp.next == null){ // if this is the last node in the list
+                    temp_prev.next = null;
+                } else{
+                    temp_prev.next = temp.next;  // if not, set connect the next node to the prev node
+                }
                 count--;
-                break;
+                return;
+            } else{  // if key does not match, continues
+                temp_prev = temp;
+                temp = temp.next;
             }
-            temp = temp.next;
         }
+
     }
 
     @Override
     public Integer GetValue(String key){
-        if(!Contains(key))
-            return null;
-
         Node temp = head;
-        while(temp.key != key){
+        while(temp != null){
+            if(temp.key == key)
+                return (Integer) temp.value;
             temp = temp.next;
         }
-        return (Integer) temp.value;
+        return null;
     }
 
     @Override

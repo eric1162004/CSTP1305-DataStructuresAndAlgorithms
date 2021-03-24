@@ -8,10 +8,10 @@ public class TestDriver {
         d.Add("three", 3);
 
         d.Remove("one");
-        d.Remove("twodsfd");
+        d.Remove("twodsfd"); // try to remove key that doesn't exist
         d.Remove("two");
         d.Remove("three");
-        d.Remove("two");
+        d.Remove("two"); // this key has already been removed
         d.Remove("one");
 
         d.Add("one", 1);
@@ -28,7 +28,11 @@ public class TestDriver {
         System.out.println(d.GetValue("three")); // null
         System.out.println(d.IsEmpty()); // F
 
-
+        try{
+            d.Add("one", 1); // adding a duplicated key here
+        }catch (InvalidKeyException e){
+            System.out.println(e.getMessage()); //Key already exists
+        }
 
     }
 }
