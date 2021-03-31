@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.sql.SQLOutput;
 import java.util.Arrays;
@@ -11,12 +14,12 @@ public class Main {
         var insertionSort = new InsertionSort();
         var mergeSort = new MergeSort();
 
-        var numberOfRuns = 1000;
+        var maxRunSize = 10000;
 
-        Thread t1 = new Thread(() -> benchMark(selectionSort::sort, "Selection Sort", numberOfRuns));
-        Thread t2 = new Thread(() -> benchMark(heapSort::sort, "Heap Sort", numberOfRuns));
-        Thread t3 = new Thread(() -> benchMark(insertionSort::sort, "Insertion Sort", numberOfRuns));
-        Thread t4 = new Thread(()->benchMark(mergeSort::sort, "Merge Sort",numberOfRuns));
+        Thread t1 = new Thread(() -> benchMark(selectionSort::sort, "Selection Sort", maxRunSize));
+        Thread t2 = new Thread(() -> benchMark(heapSort::sort, "Heap Sort", maxRunSize));
+        Thread t3 = new Thread(() -> benchMark(insertionSort::sort, "Insertion Sort", maxRunSize));
+        Thread t4 = new Thread(()->benchMark(mergeSort::sort, "Merge Sort",maxRunSize));
 
         t1.start();
         t2.start();
@@ -25,49 +28,73 @@ public class Main {
 
     }
 
-    public static void benchMark(ISortArray method, String methodName, int numberOfRuns)
+    public static void benchMark(ISortArray method, String methodName, int maxRunSize)
     {
-        var results = new long[numberOfRuns];
+        var results = new Long[maxRunSize];
         long startTime;
         long endTime;
 
-        for (int i = 0; i < numberOfRuns; i++) {
-            var array = generateRandomNumbers(10000, 1000);
+        for (int i = 0; i < maxRunSize; i++) {
+            var array = generateRandomNumbers(i, 1000);
 
             // System.out.println("unsorted" + Arrays.toString(array));
 
-            startTime = System.currentTimeMillis();
+            startTime = System.nanoTime();
             method.sort(array);
-            endTime = System.currentTimeMillis();
+            endTime = System.nanoTime();
 
             // System.out.println("sorted" + Arrays.toString(array));
 
-            results[i] = endTime-startTime;
+            results[i] = endTime - startTime;
         }
 
-        var average = Arrays.stream(results).average().getAsDouble();
-        var total = Arrays.stream(results).sum();
+        // var average = Arrays.stream(results).average().getAsDouble();
+        var total = Arrays.stream(results).reduce((a, b) -> a + b );
+        System.out.println(methodName + " total execution time: " + total + " ns");
 
-/*        System.out.println(methodName + " execution stats:");
-        System.out.println("=================================");
-        System.out.println("Number of Runs: " + numberOfRuns);
-        System.out.println("Average execution time: " + average + "ms");*/
-        System.out.println(methodName + " total execution time: " + total + "ms");
+        saveData(methodName+".txt", results);
+        //print(results);
     }
 
     public static int[] generateRandomNumbers(int size, int upperRange){
         Random rd = new Random();
         int[] arr = new int[size];
+
         for (int i = 0; i < arr.length; i++) {
             arr[i] = Math.abs(rd.nextInt() % upperRange);
         }
+
         return arr;
     }
 
-    private static void print(int[] array){
-        for (var i :
-                array) {
-            System.out.print(i + " ");
+    public static void saveData(String fileName, Long[] results){
+        BufferedWriter outputWriter = null;
+
+        try {
+            outputWriter = new BufferedWriter(new FileWriter(fileName));
+
+            for (int i = 0; i < results.length; i++) {
+                outputWriter.write(Long.toString(results[i]));
+                outputWriter.newLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if(outputWriter != null) {
+                try {
+                    outputWriter.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static <T> void print(T[] array){
+        for (T i : array) {
+            System.out.println(i + " ");
         }
         System.out.println();
     }

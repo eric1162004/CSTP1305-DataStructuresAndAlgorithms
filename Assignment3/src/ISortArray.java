@@ -1,7 +1,7 @@
 public interface ISortArray {
 
     // Pre: Take an int array
-    // Post: Return a sorted array
+    // Post: the original array is sort
     void sort(int[] array);
 
 }
